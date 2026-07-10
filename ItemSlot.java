@@ -26,10 +26,6 @@ public class ItemSlot {
         }
     }
 
-    // public void restock() {
-
-    // }
-
     public int getQuantity() {
         return this.quantity;
     }
