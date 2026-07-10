@@ -19,15 +19,11 @@ public class Driver {
 
         if (choice == 1) {
             System.out.println("Choose a Vending Machine to Create:");
-            System.out.println("[1] Regular Vedning Machine");
-            System.out.println("[2] Special Vending Machine");
+            System.out.println("[1] Regular Vending Machine");
             choice = sc.nextInt();
 
             if (choice == 1) {
                 // call regular vending machine
-            }
-            else if (choice == 2) {
-                System.out.println("Not yet available!");
             }
         }
 
