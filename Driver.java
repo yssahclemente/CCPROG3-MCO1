@@ -22,7 +22,7 @@ public class Driver {
     private static final int[]    ITEM_CALORIES = {120, 110, 80, 70, 90, 100, 110, 5, 10, 8, 90, 100};
 
     public static void main(String[] args) {
-        printBanner("SANDWICH SHOP VENDING MACHINE", "Welcome! Let's get things set up.");
+        printBanner("SANDWICH SHOP VENDING MACHINE", "Welcome!");
         boolean running = true;
 
         while (running) {
