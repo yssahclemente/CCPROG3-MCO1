@@ -197,10 +197,10 @@ public class CashInventory {
     }
 
     // for thousands
-    public void setThousands(int thousands) {
-        this.thousands = Math.max(0, thousands);
+    public void setOneThousands(int oneThousands) {
+        this.oneThousands = Math.max(0, oneThousands);
     }
-    public int getThousands() {
-        return this.thousands;
+    public int getOneThousands() {
+        return this.oneThousands;
     }
 }
