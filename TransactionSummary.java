@@ -1,3 +1,11 @@
+/**
+ * TransactionSummary.java
+ *
+ * Keeps a running record of a vending machine's sales activity since the
+ * last time it was reset (typically at each restocking): total revenue
+ * collected and how many units were sold from each slot.
+ */
+
 public class TransactionSummary {
     private double totalSales;
     private int[] itemsSold;
