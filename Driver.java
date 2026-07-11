@@ -263,7 +263,7 @@ public class Driver {
                     maintenance.replenishChange();
                     System.out.println(THIN);
                 }
-                case 5 -> printTransactionSummaryNicely(machine);
+                case 5 -> printTransactionSummary(machine);
                 case 6 -> showInventoryComparison(machine);
                 case 7 -> displayItems(machine);
                 case 8 -> testing = false;
@@ -315,7 +315,7 @@ public class Driver {
         }
     }
 
-    private static void printTransactionSummaryNicely(RegularVendingMachine machine) {
+    private static void printTransactionSummary(RegularVendingMachine machine) {
         printHeader("TRANSACTION SUMMARY");
         TransactionSummary summary = machine.getTransactionSummary();
         int[] itemsSold = summary.getItemsSold();
