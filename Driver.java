@@ -1,14 +1,23 @@
 import java.util.Scanner;
 
+/**
+ * Console-based, menu-driven entry point for the vending machine project.
+ * Lets the operator create a vending machine (Regular or Special), then
+ * test either its Vending Features or its Maintenance Features, until they 
+ * choose to exit.
+ */
 public class Driver {
 
     private static final Scanner sc = new Scanner(System.in);
     private static final String LINE  = "======================================================";
     private static final String THIN  = "------------------------------------------------------";
 
+    // Only the most recently created machine is "active" for testing,
     private static RegularVendingMachine currentRegularMachine = null;
     private static Maintenance currentMaintenance = null;
 
+    // Snapshot of quantities taken right after creation / after each restock,
+    // used to show "starting vs ending inventory since last restocking".
     private static int[] startingInventorySnapshot = null;
 
     // Names for the 12 required items (index 0 = Slot 1)
@@ -55,6 +64,11 @@ public class Driver {
     // 1. CREATE A VENDING MACHINE
     // ==========================================================
 
+    /**
+     * Displays the "Create a Vending Machine" submenu and handles the
+     * user's choice. Special machines are not yet supported and result 
+     * in an informational error message.
+     */
     private static void createVendingMachineMenu() {
         printHeader("CREATE A VENDING MACHINE");
         printOption("1", "Regular Vending Machine");
@@ -78,7 +92,12 @@ public class Driver {
             default -> printError("That's not a valid type -- please choose 1 or 2.");
         }
     }
-
+    /**
+     * Stocks slots 1-12 of the given machine with the required
+     * sandwich-shop items, each filled to the slot's 10-item capacity.
+     *
+     * @param machine the vending machine to populate
+     */
     private static void populateRegularVendingMachine(RegularVendingMachine machine) {
         for (int i = 0; i < ITEM_NAMES.length && i < RegularVendingMachine.NUM_SLOTS; i++) {
             Item item = new Item(ITEM_NAMES[i], ITEM_PRICES[i], ITEM_CALORIES[i]);
@@ -86,7 +105,14 @@ public class Driver {
             machine.setSlot(i, slot);
         }
     }
-
+    /**
+     * Records the current quantity of every slot in the given machine into
+     * startingInventorySnapshot. Called right after a machine is
+     * created and again after every restock, so the "starting vs ending
+     * inventory" report always reflects the state since the last restock.
+     *
+     * @param machine the vending machine whose slot quantities to snapshot
+     */
     private static void takeInventorySnapshot(RegularVendingMachine machine) {
         ItemSlot[] slots = machine.getSlots();
         startingInventorySnapshot = new int[slots.length];
@@ -99,6 +125,12 @@ public class Driver {
     // 2. TEST A VENDING MACHINE
     // ==========================================================
 
+    /**
+     * Displays the "Test a Vending Machine" submenu, letting the user
+     * choose between Vending Features and Maintenance Features for the
+     * currently active machine. If no machine has been created yet, an
+     * error message is shown instead and the menu is not entered.
+     */
     private static void testVendingMachineMenu() {
         if (currentRegularMachine == null) {
             printError("No vending machine has been created yet. Please create one first.");
@@ -121,6 +153,13 @@ public class Driver {
 
     // ---------------- Vending Features ----------------
 
+     /**
+     * Runs the Vending Features submenu loop (display items, purchase an
+     * item, cancel and get money back, or end and return to the main menu)
+     * until the user chooses to end the session.
+     *
+     * @param machine the currently active vending machine being tested
+     */
     private static void vendingFeaturesMenu(RegularVendingMachine machine) {
         boolean testing = true;
 
@@ -144,6 +183,15 @@ public class Driver {
         }
     }
 
+    /**
+     * Walks the user through purchasing an item: displaying the item list,
+     * prompting for a slot number, validating that the slot exists and is
+     * in stock, and collecting payment.
+     * 
+     * The user may cancel at the slot-selection prompt by entering 0.
+     *
+     * @param machine the vending machine to purchase from
+     */
     private static void purchaseFlow(RegularVendingMachine machine) {
         displayItems(machine);
 
@@ -190,6 +238,11 @@ public class Driver {
         }
     }
 
+    /**
+     * Lets the user insert money and immediately get it back without
+     * purchasing anything, simulating a customer who changed their mind
+     * mid-transaction.
+     */
     private static void cancelFlow() {
         printInfo("Insert money below, then it will be returned to you in full.");
         double payment = insertMoney();
@@ -198,6 +251,13 @@ public class Driver {
         System.out.println(THIN);
     }
 
+    /**
+     * Prompts the user to "insert" money one denomination at a time
+     * (repeating until they enter 0 as the denomination) and sums up the
+     * total amount inserted.
+     *
+     * @return the total amount of money inserted, in PHP
+     */
     private static double insertMoney() {
         double total = 0;
         int[] validDenoms = {1, 5, 10, 20, 50, 100, 500, 1000};
@@ -233,6 +293,15 @@ public class Driver {
 
     // ---------------- Maintenance Features ----------------
 
+    /**
+     * Runs the Maintenance Features submenu loop (restock, set price,
+     * collect payments, replenish change, print transaction summary, show
+     * inventory comparison, display current inventory, or end and return
+     * to the main menu) until the user chooses to end the session.
+     *
+     * @param machine     the currently active vending machine being tested
+     * @param maintenance the maintenance helper bound to that machine
+     */
     private static void maintenanceFeaturesMenu(RegularVendingMachine machine, Maintenance maintenance) {
         boolean testing = true;
 
@@ -272,6 +341,15 @@ public class Driver {
         }
     }
 
+    /**
+     * Prompts the user for a slot number and a quantity to add, then
+     * restocks that slot. Also refreshes startingInventorySnapshot
+     * so the inventory comparison report reflects this as the new
+     * starting point.
+     *
+     * @param machine     the vending machine being restocked
+     * @param maintenance the maintenance helper bound to that machine
+     */
     private static void restockFlow(RegularVendingMachine machine, Maintenance maintenance) {
         displayItems(machine);
         System.out.print("\n> Enter slot number to restock: ");
@@ -287,6 +365,13 @@ public class Driver {
         takeInventorySnapshot(machine);
     }
 
+    /**
+     * Prompts the user for a slot number and a new price, then updates
+     * that slot's item price.
+     *
+     * @param machine     the vending machine whose item price is being changed
+     * @param maintenance the maintenance helper bound to that machine
+     */
     private static void setPriceFlow(RegularVendingMachine machine, Maintenance maintenance) {
         displayItems(machine);
         System.out.print("\n> Enter slot number to update price: ");
@@ -299,6 +384,12 @@ public class Driver {
         printSuccess("Slot " + slotNumber + " price updated to PHP " + money(newPrice) + ".");
     }
 
+     /**
+     * Prints a table comparing each slot's starting quantity (as of the
+     * last restock) against its current quantity.
+     *
+     * @param machine the vending machine whose inventory is being compared
+     */
     private static void showInventoryComparison(RegularVendingMachine machine) {
         ItemSlot[] slots = machine.getSlots();
 
@@ -315,6 +406,12 @@ public class Driver {
         }
     }
 
+    /**
+     * Prints a formatted table of units sold per slot, plus the total
+     * sales revenue, drawn from the machine's TransactionSummary.
+     *
+     * @param machine the vending machine whose transaction summary is printed
+     */
     private static void printTransactionSummary(RegularVendingMachine machine) {
         printHeader("TRANSACTION SUMMARY");
         TransactionSummary summary = machine.getTransactionSummary();
@@ -336,6 +433,13 @@ public class Driver {
     // Display helpers
     // ==========================================================
 
+    /**
+     * Prints a formatted table of every slot in the machine, showing each
+     * item's name, price, calories, remaining quantity, and stock status
+     * (AVAILABLE or OUT OF STOCK). Empty slots are labeled accordingly.
+     *
+     * @param machine the vending machine whose items are being displayed
+     */
     private static void displayItems(RegularVendingMachine machine) {
         printHeader("ITEMS AVAILABLE");
         ItemSlot[] slots = machine.getSlots();
