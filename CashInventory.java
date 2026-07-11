@@ -5,7 +5,11 @@ public class CashInventory {
     /*
         This will serve as the overloaded constructor when starting with a specific bank
     */
-    public CashInventory() {
+    public CashInventory(int ones, int fives, int tens,
+                        int twenties, int fifties, 
+                        int hundreds, int fiveHundreds,
+                        int oneThousands) 
+    {
         this.ones = Math.max(0, ones);
         this.fives = Math.max(0, fives);
         this.tens = Math.max(0, tens);
@@ -76,7 +80,7 @@ public class CashInventory {
         for (int denom : DENOMINATIONS) {
             int availableCount = getDenominationCount(denom);
             int neededCount = remaining / denom;
-            int usedCount = Math.min(needed.Count, availableCount);
+            int usedCount = Math.min(neededCount, availableCount);
 
             remaining -= usedCount * denom;
         }
@@ -95,7 +99,7 @@ public class CashInventory {
             int availableCount = getDenominationCount(denom);
             int neededCount = remaining / denom;
 
-            dispensedCoun[i] = Math.min(neededCount, availableCount);
+            dispensedCounts[i] = Math.min(neededCount, availableCount);
             remaining -= dispensedCounts[i] * denom;
         }
 
@@ -127,6 +131,8 @@ public class CashInventory {
         this.twenties = 20;
         this.fifties = 10;
         this.hundreds = 10;
+        this.fiveHundreds = 5;
+        this.oneThousands = 5;
         System.out.println("[Maintenance] Cash inventories replenished successfully.");
     }
 
@@ -144,6 +150,14 @@ public class CashInventory {
             case 1 -> ones;
             default -> 0;
         };
+    }
+
+    public int[] makeChange(double amount) {
+        return calculateAndDispense(amount);
+    }
+
+    public void returnInsertedMoney() {
+        System.out.println("Returning inserted money...");
     }
 
     // getters & setters below
@@ -170,6 +184,15 @@ public class CashInventory {
     }
     public int getTens() {
         return this.tens;
+    }
+
+    // for twenties
+    public void setTwenties(int twenties) {
+        this.twenties = Math.max(0, twenties);
+    }
+
+    public int getTwenties() {
+        return twenties;
     }
 
     // for fifties
@@ -202,5 +225,9 @@ public class CashInventory {
     }
     public int getOneThousands() {
         return this.oneThousands;
+    }
+
+    public double getTotalCash() {
+        return getTotalValue();
     }
 }

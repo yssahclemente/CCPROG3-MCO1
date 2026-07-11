@@ -1,5 +1,5 @@
 public class TransactionSummary {
-    private int totalSales;
+    private double totalSales;
     private int[] itemsSold;
 
     /*
@@ -18,10 +18,10 @@ public class TransactionSummary {
         @param price - this is the total price of the items sold
         @param slotIndex - this will have the respective slot index stored
     */
-    public void recordSale(int price, int slotIndex) {
+    public void recordSale(double price, int slotIndex) {
         if (slotIndex >= 0 && slotIndex < itemsSold.length) {
             this.totalSales += price;
-            this.itemSold[slotIndex]++;
+            this.itemsSold[slotIndex]++;
         }
     }
 
@@ -31,8 +31,8 @@ public class TransactionSummary {
     public void printSummary() {
         System.out.println("=== TRANSACTION SUMMARY ===");
         System.out.println("Total Sales Revenue: $" + totalSales);
-        for (int i = 0; i < itemSold.length; i++) {
-            System.out.println("Slot " + i + " items sold: " + itemSold[i]);
+        for (int i = 0; i < itemsSold.length; i++) {
+            System.out.println("Slot " + (i+1) + " items sold: " + itemsSold[i]);
         }
     }
 
@@ -41,6 +41,16 @@ public class TransactionSummary {
     */
     public void resetSummary() {
         this.totalSales = 0.0;
-        this.itemsSold = new int[numSlots];
+        this.itemsSold = new int[itemsSold.length];
+    }
+
+    // getters
+
+    public double getTotalSales() {
+        return totalSales;
+    }
+
+    public int[] getItemsSold() {
+        return itemsSold;
     }
 }

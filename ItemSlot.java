@@ -20,13 +20,46 @@ public class ItemSlot {
         return quantity > 0;
     }
 
-    public void dispenseItem() {
+    public boolean dispenseItem() {
         if (isAvailable()) {
             quantity--;
+            return true;
+        }
+        return false;
+    }
+
+    public void restock(int amount) {
+        if (amount > 0) {
+            quantity = Math.min(quantity + amount, capacity);
         }
     }
 
+    // ------------- Getters -------------
+    public int getSlotNumber() {
+        return slotNumber;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
     public int getQuantity() {
-        return this.quantity;
+        return quantity;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    // ---------- Setters ----------
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public void setQuantity(int quantity) {
+        if (quantity >= 0 && quantity <= capacity) {
+            this.quantity = quantity;
+        }
     }
 }
